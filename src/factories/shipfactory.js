@@ -1,15 +1,16 @@
 function createShip(location) {
   return {
     shipLength: location.length,
+    type: [],
     location: [],
     hitLocation: [],
-    hit: function (firedLocation) {
+    hit(firedLocation) {
       const didHit = location.includes(firedLocation) ? true : false;
       if (didHit) {
         this.hitLocation.push(firedLocation);
       }
     },
-    isSunk: function () {
+    isSunk() {
       return this.hitLocation.length === this.shipLength ? true : false;
     },
   };
