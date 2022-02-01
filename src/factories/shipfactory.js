@@ -1,19 +1,27 @@
-function createShip(location) {
+/* eslint-disable react/no-this-in-sfc */
+import shipType from '../shiptype';
+
+function Ship(i) {
   return {
-    shipLength: location.length,
-    type: [],
-    location: [],
+    shipLength: shipType[i].length,
+    type: shipType[i].type,
+    shipLocation: null,
+    locationArr: [],
     hitLocation: [],
     hit(firedLocation) {
-      const didHit = location.includes(firedLocation) ? true : false;
+      // assign true of false value to hit status
+      const didHit = this.locationArr.includes(firedLocation);
+      // if hit occurs, add to hitLocation Array
       if (didHit) {
         this.hitLocation.push(firedLocation);
       }
     },
     isSunk() {
-      return this.hitLocation.length === this.shipLength ? true : false;
+      // if length of hit location array is the same as length of location
+       return this.hitLocation.every((e) => this.locationArr.includes(e));
+        ;
     },
   };
 }
 
-export default createShip;
+export default Ship;
