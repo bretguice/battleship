@@ -5,22 +5,35 @@ function Ship(i) {
   return {
     shipLength: shipType[i].length,
     type: shipType[i].type,
-    shipLocation: null,
+    shipLocation: 1000000,
     locationArr: [],
     hitLocation: [],
-    hit(firedLocation) {
+    sunk: false,
+    
+    isSunk() {
+      if (this.locationArr.every((e) => this.hitLocation.includes(e)) === true) {
+        this.sunk = true;
+      } else {
+        this.sunk = false;
+      }
+
+      return this.sunk;
+        
+    },
+
+
+    checkHit(firedLocation) {
       // assign true of false value to hit status
       const didHit = this.locationArr.includes(firedLocation);
       // if hit occurs, add to hitLocation Array
       if (didHit) {
         this.hitLocation.push(firedLocation);
+        // this.isSunk();
       }
+
+      return didHit;
     },
-    isSunk() {
-      // if length of hit location array is the same as length of location
-       return this.hitLocation.every((e) => this.locationArr.includes(e));
-        ;
-    },
+
   };
 }
 
