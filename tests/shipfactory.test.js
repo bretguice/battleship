@@ -1,7 +1,7 @@
 import Ship from '../src/factories/shipfactory';
 
 describe ('ship factory testing', () => {
-  const ship = Ship(4);
+  const ship = new Ship(4);
   beforeEach(() =>{ 
     
     ship.locationArr = [0,1];
@@ -21,5 +21,13 @@ describe ('ship factory testing', () => {
 
     expect(ship.sunk).toBe(true);
   })
+
+  it ('test hit location', ()=> {
+    ship.checkHit(1);
+
+    expect(ship.hitLocation).toStrictEqual([1])
+  })
+
+
 
 })

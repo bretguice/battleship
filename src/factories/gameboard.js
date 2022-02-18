@@ -1,16 +1,23 @@
+/* eslint-disable no-else-return */
 /* eslint-disable no-unneeded-ternary */
+import Ship from "./shipfactory";
 
+class GameBoard {
+  constructor (size) {
+    this.size = size;
+    this.boardSize = size * size;
+    this.board = [];
+    this.dock = [];
+    this.inPlay = [];
+    this.firedShots = [];
+    this.gameOver = false;
+    this.axis = "y";
+    this.hitMessage = "";
 
-function GameBoard(size) {
-  return {
-    boardSize: size * size,
-    firedShots: [],
-    board: [],
-    gameOver: false,
-    boatLocations: [],
-    yAxis: true,
-    ships: [],
-    hitMessage: "",
+  }
+/*
+ Start of game methods
+*/
 
     setupBoard() {
       for (let i = 0; i < this.boardSize; i ++) {
@@ -18,65 +25,102 @@ function GameBoard(size) {
           location: i,
           isShot: false,
           boatPresent: false,
-        });
+          hit: false,
+        });;
       }
-    },
+    }
 
-    receiveAttack(location) {
-      this.board.isShot = !this.firedShots.includes(location);
-      if (this.board.isShot) this.firedShots.push(location);
-    },
-    createLocationArray(location, ship){
-      const locationArray = []
-        for (let i = 0; i < ship.length; i++) {
-          if (this.yAxis){ 
-            locationArray.push(i + location * 10) }
-          else  {locationArray.push(i + location)};
-        }
-      return locationArray;
+    makeShips(){
+      const carrier = Ship(0);
+      const battleShip = Ship(1);
+      const submarine =  Ship(2);
+      const destroyer = Ship(3);
+      const patrolBoat = Ship(4);
+      this.inPlay.push(carrier, battleShip, submarine, destroyer, patrolBoat);
+      return this.inPlay;
 
-    },
+    }
 
-    checkForCollisions(locationArray) {
-      // Check to make sure ship placement is legal
-      // Does not go at the location of another ship
-      // Does not cross over the boundary
-      const xAxisBumber = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99];
-      const yAxisBumber = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 9, 19, 29, 39, 49, 59, 69, 79, 89, 99];
-      let collision;
 
-      if (this.yAxis){
-        collision = (locationArray.some(e => yAxisBumber.includes(e))) ? false : true;
-      } 
-      else {
-        collision = (locationArray.some(e => xAxisBumber.includes(e))) ? false : true; 
-      }
-
-      return collision;
-    },
-
+/*
+ Ship placement methods
+*/
     rotateShip() {
       // Default axis is y axis.  If default change axis to x.
-      if (this.yAxis === false){
-        this.yAxis = true;
-      } else if (this.board.yAxis === true){
-        this.yAxis = false;
+      if (this.axis === 'y'){
+        this.axis = 'x';
+      } else if (this.axis === 'x'){
+        this.axis = 'y';
       }
-      return this.yAxis;
-    },
-    checkForHit(i) {
-      return this.board[i].boatPresent;
-    },
-    markShipPlacement() {
-      for (let i = 0; i < this.size; i++) {
-        if (this.board[i].boatPresent) this.board.boatLocations.push(i);
+      return this.axis;
+    }
+
+    placeShip(location, ship){
+
+      for (let i = 0; i < ship.shipLength; i++) {
+        if (this.axis === 'y'){ ship.locationArr.push(location + i * this.size) }
+        else if (this.axis === 'x')  {ship.locationArr.push(location + i)};
       }
-    },
+      
+    return ship.locationArr;
+
+    }
+
+    markShip(locationArr){
+      for (let i = 0; i < locationArr.length; i++){
+        this.board[locationArr[i]].boatPresent = true
+      }
+    }
+
+    checkForCollisions(locationArray) {
+        const xArrayBumber = [9, 19, 29, 39, 49, 59, 69, 79, 89, 99]
+        let legalLoc;
+        if (locationArray.some((e) => !this.board[e])){
+          legalLoc = false;
+        } else if (xArrayBumber.some((n)=>[n, n + 1].every((e) => locationArray.includes(e)))) {
+          legalLoc = false;
+        } else if (locationArray.some((e) => this.board[e].boatPresent)){
+          legalLoc = false;
+        } else {
+          legalLoc = true;
+        }
+
+        return legalLoc;
+    }
+
+
+
+/*
+ Attack methods
+*/
+    checkLegalMove(location){
+      let legalMove = true;
+      if(this.board[location].isShot)  
+      legalMove = false;
+      return legalMove;
+    }
+
+    receiveAttack(location) {
+
+        this.board[location].isShot = true;
+        for (let i = 0; i < this.inPlay.length; i++){
+          this.inPlay[i].checkHit(location);
+          if (this.inPlay[i].sunk) {
+            this.dock.push(this.inPlay[i]);
+            this.inPlay.splice(i,1);
+          }
+        }
+        this.checkForGameOver();
+
+
+    }
+    
     checkForGameOver() {
-      (this.gameOver = this.boatLocations.every((i) => this.firedShots.includes(i)));
+      this.gameOver = (this.inPlay.length === 0) ? true : false;
       return this.gameOver;
-    },
-  };
+    }
+
 }
 
 export default GameBoard;
+

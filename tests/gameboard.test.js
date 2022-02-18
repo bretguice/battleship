@@ -1,57 +1,133 @@
 import GameBoard from "../src/factories/gameboard";
+import Ship from "../src/factories/shipfactory";
 
 describe ('test functions', () => {
-    const gameBoard = GameBoard(100);
+    let gameboard;     
     beforeEach(() =>{ 
-        gameBoard.setupBoard()
+        gameboard = new GameBoard(10);
+        gameboard.setupBoard();
+        
     });
 
-    it ('check for hit', () =>{
-        
-        gameBoard.board[2].boatPresent = true;
-        expect(gameBoard.checkForHit(2)).toBe(true);
+    it ('check axis', () => {
+        gameboard.rotateShip();
+        expect(gameboard.axis).toBe('x');
     })
+
+    it ('check location array x Axis', () =>{
+        let carrier = new Ship(0);    
+        gameboard.rotateShip();        
+        expect(gameboard.placeShip(0, carrier)).toStrictEqual([0, 1, 2, 3, 4]);
+    })
+   
+    it ('check location array y Axis', () =>{
+        let carrier = new Ship(0);    
+       
+        expect(gameboard.placeShip(0, carrier)).toStrictEqual([0, 10, 20, 30, 40]);
+    })
+
+    it ('check boat present flag', () =>{
+        let carrier = new Ship(0);   
+        gameboard.markShip(gameboard.placeShip(0, carrier));
+       
+        expect(gameboard.board[10].boatPresent).toBe(true);
+    })
+
+    it ('check fail boat placement on another boat', () =>{
+        let carrier = new Ship(0); 
+        let battleShip = new Ship(1);  
+        gameboard.markShip(gameboard.placeShip(0, carrier));
+       
+        expect(gameboard.checkForCollisions(gameboard.placeShip(10, battleShip))).toBe(false);
+    })
+
+    it ('check receive attack isShot flag', () => {
+        let carrier = new Ship(0);
+        gameboard.inPlay.push(carrier);
+        gameboard.receiveAttack(0)
+
+        expect(gameboard.board[0].isShot).toBe(true);
+    })
+
+    it ('check attack with multiple ships', () => {
+        let carrier = new Ship(0);
+        gameboard.inPlay.push(carrier);
+        let battleShip = new Ship(1);
+        gameboard.inPlay.push(battleShip);
+        gameboard.placeShip(0, carrier);
+        gameboard.placeShip(8, battleShip);
+        gameboard.receiveAttack(0);
+        gameboard.receiveAttack(10);
+        gameboard.receiveAttack(20);
+
+        expect(carrier.hitLocation).toStrictEqual([0,10, 20]);
+    })
+
+    it ('check for sunk ship', () =>{
+        let carrier = new Ship(0);
+        gameboard.inPlay.push(carrier);
+        let battleShip = new Ship(1);
+        gameboard.inPlay.push(battleShip);
+        gameboard.placeShip(0, carrier);
+        gameboard.placeShip(8, battleShip);
+        gameboard.receiveAttack(0);
+        gameboard.receiveAttack(10);
+        gameboard.receiveAttack(20);
+        gameboard.receiveAttack(30);
+        gameboard.receiveAttack(40);
+
+        expect(carrier.sunk).toBe(true);
+    
+    })
+
+    it ('check for sunk ship', () =>{
+        let carrier = new Ship(0);
+        gameboard.inPlay.push(carrier);
+        let battleShip = new Ship(1);
+        gameboard.inPlay.push(battleShip);
+        gameboard.placeShip(0, carrier);
+        gameboard.placeShip(8, battleShip);
+        gameboard.receiveAttack(0);
+        gameboard.receiveAttack(10);
+        gameboard.receiveAttack(20);
+        gameboard.receiveAttack(30);
+        gameboard.receiveAttack(40);
+
+        expect(gameboard.dock).toEqual([carrier]);
+    
+    })
+
     it ('check for game over', () =>{
-        gameBoard.boatLocations = [1, 2, 3];
-        gameBoard.firedShots = [0, 1, 2, 3, 4, 5, 6, 7];
-        expect(gameBoard.checkForGameOver()).toBe(true);
+        let carrier = new Ship(0);
+        gameboard.inPlay.push(carrier);
+        let battleShip = new Ship(1);
+        gameboard.inPlay.push(battleShip);
+        gameboard.placeShip(0, carrier);
+        gameboard.placeShip(8, battleShip);
+        gameboard.receiveAttack(0);
+        gameboard.receiveAttack(10);
+        gameboard.receiveAttack(20);
+        gameboard.receiveAttack(30);
+        gameboard.receiveAttack(40);
+        gameboard.receiveAttack(8);
+        gameboard.receiveAttack(18);
+        gameboard.receiveAttack(28);
+        gameboard.receiveAttack(38);
 
-    })
-    it ('check for game not over', () =>{
-        gameBoard.boatLocations = [1, 2, 3];
-        gameBoard.firedShots = [0, 2, 3, 4, 5, 6, 7];
-        expect(gameBoard.checkForGameOver()).toBe(false);
-
-    })
-
-    it ('check for game not over', () =>{
-        gameBoard.boatLocations = [1, 2, 3];
-        gameBoard.firedShots = [2];
-        expect(gameBoard.checkForGameOver()).toBe(false);
-
-    })
-/*
-    it ('check for collisions y axis false', () =>{
-        const locationArr = [10,11];
-
-        expect(gameBoard.checkForCollisions(locationArr)).toBe(false);
+        expect(gameboard.gameOver).toBe(true);
     })
 
-    it ('check for collisions y axis true', () =>{
-        const locationArr = [9,10];
-
-        expect(gameBoard.checkForCollisions(locationArr)).toBe(true);
+    it ('check location array is valid y axis', () =>{
+        let carrier = new Ship(0);    
+        
+        expect(gameboard.checkForCollisions(gameboard.placeShip(70, carrier))).toBe(false);
     })
 
-    it ('check for collisions x axis false', () =>{
-        const locationArr = [1,91];
-
-        expect(gameBoard.checkForCollisions(locationArr)).toBe(false);
+    it ('check location array is valid x axis', () =>{
+        let carrier = new Ship(0);    
+        gameboard.rotateShip();
+        expect(gameboard.checkForCollisions(gameboard.placeShip(9, carrier))).toBe(false);
     })
 
-    it ('check for collisions x axis true', () =>{
-        const locationArr = [1,11];
+}) 
 
-        expect(gameBoard.checkForCollisions(locationArr)).toBe(true);
-    })*/
-})

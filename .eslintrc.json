@@ -8,5 +8,5 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "rules": { "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }] }
+  "rules": { "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }, {"requireAnonymousFunctions": true}] }
 }
