@@ -1,23 +1,23 @@
 const shipType = [
   {
     type: 'Carrier',
-    length: 5,
+    shipLength: 5,
   },
   {
     type: 'Battleship',
-    length: 4,
+    shipLength: 4,
   },
   {
     type: 'Submarine',
-    length: 3,
+    shipLength: 3,
   },
   {
     type: 'Destroyer',
-    length: 3,
+    shipLength: 3,
   },
   {
     type: 'Patrol Boat',
-    length: 2,
+    shipLength: 2,
   },
 ];
 

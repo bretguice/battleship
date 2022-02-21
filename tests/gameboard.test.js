@@ -51,16 +51,16 @@ describe ('test functions', () => {
 
     it ('check attack with multiple ships', () => {
         let carrier = new Ship(0);
-        gameboard.inPlay.push(carrier);
         let battleShip = new Ship(1);
         gameboard.inPlay.push(battleShip);
         gameboard.placeShip(0, carrier);
         gameboard.placeShip(8, battleShip);
-        gameboard.receiveAttack(0);
-        gameboard.receiveAttack(10);
-        gameboard.receiveAttack(20);
+        gameboard.Attack(0);
+        gameboard.Attack(10);
+        gameboard.Attack(20);
 
-        expect(carrier.hitLocation).toStrictEqual([0,10, 20]);
+
+        expect(carrier.hitLocation.length).toBe(3);
     })
 
     it ('check for sunk ship', () =>{
@@ -82,9 +82,7 @@ describe ('test functions', () => {
 
     it ('check for sunk ship', () =>{
         let carrier = new Ship(0);
-        gameboard.inPlay.push(carrier);
         let battleShip = new Ship(1);
-        gameboard.inPlay.push(battleShip);
         gameboard.placeShip(0, carrier);
         gameboard.placeShip(8, battleShip);
         gameboard.receiveAttack(0);
@@ -99,9 +97,7 @@ describe ('test functions', () => {
 
     it ('check for game over', () =>{
         let carrier = new Ship(0);
-        gameboard.inPlay.push(carrier);
         let battleShip = new Ship(1);
-        gameboard.inPlay.push(battleShip);
         gameboard.placeShip(0, carrier);
         gameboard.placeShip(8, battleShip);
         gameboard.receiveAttack(0);

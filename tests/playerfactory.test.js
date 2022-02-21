@@ -1,54 +1,59 @@
 import Player from "../src/factories/playerfactor";
+import Ship from "../src/factories/shipfactory";
 
 describe('Tests for Player Factory', ()=> {
-    const player = Player('player 1');
+    let player; 
+    let cpu;
     beforeEach(() =>{ 
-        player.board.setupBoard(100)
+        player = new Player("Test", player);
+        cpu = new Player("CPU", cpu);
+        cpu.board.setupBoard();
+        
+        
     });
     it ('fire a shot', () =>{
+        const carrier = new Ship(0);
+        cpu.board.placeShip(0, carrier);
+        player.fireShot(0, cpu.board);
+
+        expect(cpu.board.firedShots).toStrictEqual([0])
 
     })
-    it ('try to fire a shot to a location twice', () =>{
 
-    })
-    it ('Check if player is player', ()=>{
-        expect(player.checkForCpuPlayer()).toBe(false);
-    })
-    it ('Check if player is cpu', ()=>{
-        const cpu = Player(null);
-        expect(cpu.checkForCpuPlayer()).toBe(true);
+    it ('check ship hit location', ()=> {
+        const carrier = new Ship(0);
+        cpu.board.placeShip(0, carrier);
+        player.fireShot(0, cpu.board);
+
+        expect(carrier.hitLocation).toEqual([0]);
     })
 
-    it ('Test length of dock after ship creation', ()=>{
-        player.makeShip();
-        expect(player.dock.length).toBe(5);
+    it ('check player hit message hit!', ()=> {
+        const carrier = new Ship(0);
+        cpu.board.placeShip(0, carrier);
+        player.fireShot(0, cpu.board);
+
+        expect(cpu.board.hitMessage).toBe("Hit!");
+    })
+    
+    it ('check player hit message miss!', ()=> {
+        const carrier = new Ship(0);
+        cpu.board.placeShip(0, carrier);
+        player.fireShot(1, cpu.board);
+
+        expect(cpu.board.hitMessage).toBe("Miss!");
     })
 
-    it ('Test name of first item in dock', ()=>{
-        player.makeShip();
-        expect(player.dock[0].type).toBe("Carrier");
-    })
+    it ('check player sunk message', ()=> {
+        const carrier = new Ship(0);
+        cpu.board.placeShip(0, carrier);
+        player.fireShot(0, cpu.board);
+        player.fireShot(10, cpu.board);
+        player.fireShot(20, cpu.board);
+        player.fireShot(30, cpu.board);
+        player.fireShot(40, cpu.board);
 
-    it ('Test name of first item in dock after placing ship', ()=>{
-        player.makeShip();
-        player.placeShip(1);
-        expect(player.dock[0].type).toBe("Battleship");
+        expect(cpu.board.sunkMessage).toEqual("Carrier is sunk");
     })
-    it ('Test name of first item in play after placing ship', ()=>{
-        player.makeShip();
-        player.placeShip(1);
-        expect(player.inPlay[0].type).toBe("Carrier");
-    })
-// This is way too complicated.  Let's find a way to make ship location simple
-/*
-    it ('Test name of first item in dock after placing ship', ()=>{
-        player.makeShip();
-        player.inputLocation(1);
-        player.placeShip(player.inputLocation);
-        player.board.createLocationArray(player.inputLocation , player.inPlay[0])
-        expect(player.inPlay[0].locationArr).toBe([1, 11]);
-    })
-
-*/
 
 })

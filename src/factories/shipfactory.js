@@ -3,10 +3,11 @@ import shipType from '../shiptype';
 
 class Ship {
   constructor (i) {
-    this.shipLength = shipType[i].length;
-    this.type = shipType[i].type;
+    this.shipLength = shipType[i].shipLength;
+    this.shipType = shipType[i].type;
     this.locationArr = [];
     this.hitLocation = [];
+    this.didHit = false;
     this.sunk = false;
   }
 
@@ -24,15 +25,14 @@ class Ship {
 
     checkHit(firedLocation) {
       // assign true of false value to hit status
-      const didHit = this.locationArr.includes(firedLocation);
-      // if hit occurs, add to hitLocation Array
-      if (didHit) {
-        this.hitLocation.push(firedLocation);
-        this.isSunk();
-        // this.isSunk();
-      }
+       if (this.locationArr.includes(firedLocation)){
+         this. didHit = true;
+         this.hitLocation.push(firedLocation);
+         this.isSunk();
+       } else {
+         this.didHit = false;
+       }
 
-      return didHit;
     }
 
 }

@@ -17,8 +17,7 @@ describe ('ship factory testing', () => {
   it ('test sunk property', () => {
       ship.checkHit(0);
       ship.checkHit(1);
-      ship.isSunk();
-
+      
     expect(ship.sunk).toBe(true);
   })
 
@@ -28,6 +27,10 @@ describe ('ship factory testing', () => {
     expect(ship.hitLocation).toStrictEqual([1])
   })
 
+  it ('test checkHit for true', () =>{
+    ship.checkHit(1);
+    expect(ship.didHit).toBe(true);
+  })
 
 
 })

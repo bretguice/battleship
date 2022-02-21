@@ -13,6 +13,7 @@ class GameBoard {
     this.gameOver = false;
     this.axis = "y";
     this.hitMessage = "";
+    this.sunkMessage = "";
 
   }
 /*
@@ -29,18 +30,6 @@ class GameBoard {
         });;
       }
     }
-
-    makeShips(){
-      const carrier = Ship(0);
-      const battleShip = Ship(1);
-      const submarine =  Ship(2);
-      const destroyer = Ship(3);
-      const patrolBoat = Ship(4);
-      this.inPlay.push(carrier, battleShip, submarine, destroyer, patrolBoat);
-      return this.inPlay;
-
-    }
-
 
 /*
  Ship placement methods
@@ -61,6 +50,8 @@ class GameBoard {
         if (this.axis === 'y'){ ship.locationArr.push(location + i * this.size) }
         else if (this.axis === 'x')  {ship.locationArr.push(location + i)};
       }
+
+      this.inPlay.push(ship);
       
     return ship.locationArr;
 
@@ -100,20 +91,48 @@ class GameBoard {
       return legalMove;
     }
 
-    receiveAttack(location) {
+    Attack(location) {
 
         this.board[location].isShot = true;
         for (let i = 0; i < this.inPlay.length; i++){
           this.inPlay[i].checkHit(location);
-          if (this.inPlay[i].sunk) {
-            this.dock.push(this.inPlay[i]);
-            this.inPlay.splice(i,1);
+            if(this.inPlay.some(e => e.didHit === true)){
+              this.hitMessage = 'Hit!';
+              if (this.inPlay[i].sunk) {
+                this.dock.push(this.inPlay[i]);
+                this.inPlay.splice(i,1);
+                // this.sunkMessage = `${this.inPlay[i].type} has been sunk!`
+                this.checkForGameOver();
           }
+        } else {
+          this.hitMessage =  'Miss!';
         }
-        this.checkForGameOver();
-
-
+      }       
     }
+
+    receiveAttack(location) {
+
+      this.board[location].isShot = true;
+      this.inPlay.forEach(ship => ship.checkHit(location));
+        if(this.inPlay.some(e => e.didHit === true)){
+          this.hitMessage = 'Hit!';
+          if (this.inPlay.some(ship => ship.sunk === true)) {
+            const i = this.inPlay.findIndex(ship => ship.sunk);
+            this.handleSunkShip(this.inPlay[i]); 
+            this.inPlay.splice(i,1);
+            this.checkForGameOver();          
+            
+        }
+      } else {
+        this.hitMessage =  'Miss!';
+      }         
+  }
+
+    handleSunkShip(ship) {
+      this.sunkMessage = `${ship.shipType} is sunk`;
+      this.dock.push(ship);
+      
+  }
     
     checkForGameOver() {
       this.gameOver = (this.inPlay.length === 0) ? true : false;
