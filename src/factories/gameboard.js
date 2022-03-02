@@ -1,17 +1,17 @@
-/* eslint-disable no-else-return */
-/* eslint-disable no-unneeded-ternary */
 import Ship from "./shipfactory";
+import Player from "./playerfactor";
 
 class GameBoard {
   constructor (size) {
     this.size = size;
     this.boardSize = size * size;
-    this.board = [];
+    this.tiles = [];
     this.dock = [];
     this.inPlay = [];
+    this.graveyard = [];
     this.firedShots = [];
     this.gameOver = false;
-    this.axis = "y";
+    this.yAxis = true;
     this.hitMessage = "";
     this.sunkMessage = "";
 
@@ -22,13 +22,24 @@ class GameBoard {
 
     setupBoard() {
       for (let i = 0; i < this.boardSize; i ++) {
-        this.board.push({
+        this.tiles.push({
           location: i,
           isShot: false,
           boatPresent: false,
           hit: false,
         });;
       }
+    }
+
+    createShips(){
+      const carrier = new Ship(0);
+      const battleShip = new Ship(1);
+      const submarine = new Ship(2);
+      const destroyer = new Ship(3);
+      const patrolBoat = new Ship(4);
+
+      this.dock.push(carrier, battleShip, submarine, destroyer, patrolBoat);
+
     }
 
 /*
@@ -44,33 +55,58 @@ class GameBoard {
       return this.axis;
     }
 
-    placeShip(location, ship){
-
-      for (let i = 0; i < ship.shipLength; i++) {
-        if (this.axis === 'y'){ ship.locationArr.push(location + i * this.size) }
-        else if (this.axis === 'x')  {ship.locationArr.push(location + i)};
+    placeShip(location){
+      var clickLocation;
+      var div;
+      var locationArray = [];
+      var iLoc;
+      for (let i = 0; i < this.dock[0].shipLength; i++) {
+        iLoc = this.yAxis ? location + i * this.size : location + i
+        
+       locationArray.push(iLoc);
+       
       }
-
-      this.inPlay.push(ship);
       
-    return ship.locationArr;
-
+      if(this.checkForCollisions(locationArray)){
+        this.dock[0].locationArr.push(locationArray);
+        this.markShip(locationArray);
+        
+      }else {
+        return
+      } 
+      
     }
 
-    markShip(locationArr){
-      for (let i = 0; i < locationArr.length; i++){
-        this.board[locationArr[i]].boatPresent = true
-      }
+    placedShip(clickLocation){
+      
+      //this.createLocationArray(clickLocation);
+      
+    }
+
+    markShip(locationArray){
+      const playerCode = "000";
+     
+      
+      locationArray.forEach(loc => {
+        this.tiles[loc].boatPresent = true;
+        const div = document.getElementById(playerCode+loc);
+        div.classList.add('ship');
+        
+      })
+
+      this.inPlay.push(this.dock[0]);
+      this.dock.splice(0, 1);
+   
     }
 
     checkForCollisions(locationArray) {
         const xArrayBumber = [9, 19, 29, 39, 49, 59, 69, 79, 89, 99]
         let legalLoc;
-        if (locationArray.some((e) => !this.board[e])){
+        if (locationArray.some((e) => !this.tiles[e])){
           legalLoc = false;
         } else if (xArrayBumber.some((n)=>[n, n + 1].every((e) => locationArray.includes(e)))) {
           legalLoc = false;
-        } else if (locationArray.some((e) => this.board[e].boatPresent)){
+        } else if (locationArray.some((e) => this.tiles[e].boatPresent)){
           legalLoc = false;
         } else {
           legalLoc = true;
@@ -86,33 +122,14 @@ class GameBoard {
 */
     checkLegalMove(location){
       let legalMove = true;
-      if(this.board[location].isShot)  
+      if(this.tiles[location].isShot)  
       legalMove = false;
       return legalMove;
     }
 
-    Attack(location) {
-
-        this.board[location].isShot = true;
-        for (let i = 0; i < this.inPlay.length; i++){
-          this.inPlay[i].checkHit(location);
-            if(this.inPlay.some(e => e.didHit === true)){
-              this.hitMessage = 'Hit!';
-              if (this.inPlay[i].sunk) {
-                this.dock.push(this.inPlay[i]);
-                this.inPlay.splice(i,1);
-                // this.sunkMessage = `${this.inPlay[i].type} has been sunk!`
-                this.checkForGameOver();
-          }
-        } else {
-          this.hitMessage =  'Miss!';
-        }
-      }       
-    }
-
     receiveAttack(location) {
 
-      this.board[location].isShot = true;
+      this.this[location].isShot = true;
       this.inPlay.forEach(ship => ship.checkHit(location));
         if(this.inPlay.some(e => e.didHit === true)){
           this.hitMessage = 'Hit!';
@@ -130,7 +147,7 @@ class GameBoard {
 
     handleSunkShip(ship) {
       this.sunkMessage = `${ship.shipType} is sunk`;
-      this.dock.push(ship);
+      this.graveyard.push(ship);
       
   }
     

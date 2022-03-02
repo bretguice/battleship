@@ -23,7 +23,7 @@ class Player {
         return false
       }
     }
-  
+
 }
 
 export default Player;

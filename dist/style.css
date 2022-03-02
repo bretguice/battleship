@@ -1,0 +1,61 @@
+body {
+    background-color: aqua;
+}
+h1{
+    text-align: center;
+    font-size: 75px;
+}
+h3{
+    text-align: center;
+    font-size: 24px;
+}
+
+#board{
+    display: flex;
+}
+#player1-board {
+    position: absolute;
+    right: 60vw;
+    top: 20vh;
+}
+
+#message-board{
+    position: absolute;
+    right: 50vw;
+    top: 50vh;
+}
+#hit-message,
+#sunk-message {
+    text-align: center;
+}
+
+#player2-board{
+    position: absolute;
+    left: 60vw;
+    top: 20vh;
+}
+
+#player1, 
+#player2 {
+    background-color: white;
+
+    display: grid;
+    grid-template-columns: repeat(10, 45px);
+    grid-gap: 2px;
+    
+}
+.gameboard{
+    height: 45px;
+    width: 45px;
+    outline: black solid 2px;
+}
+
+.ship{
+    background-color: yellow;
+}
+.hit{
+    background-color: red;
+}
+.miss{
+    background-color: lightgray;
+}

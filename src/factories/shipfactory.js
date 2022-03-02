@@ -1,4 +1,3 @@
-/* eslint-disable react/no-this-in-sfc */
 import shipType from '../shiptype';
 
 class Ship {
