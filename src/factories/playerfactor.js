@@ -15,6 +15,7 @@ class Player {
     }
 
     fireShot(location, gameboard) {
+      console.log('fired shot' + location)
       if(!gameboard.firedShots.includes(location)){
         gameboard.firedShots.push(location);
         gameboard.receiveAttack(location);
