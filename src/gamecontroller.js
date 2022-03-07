@@ -1,23 +1,16 @@
-export const gameStateArr = ['player setup', 'cpu setup', 'player attack', 'player result', 'cpu attack', 'cpu result'];
-export const [playerSetup, cpuSetup, playerAttack, playerResult, cpuAttack, cpuResult] = gameStateArr;
-// eslint-disable-next-line import/no-mutable-exports
-export let gameState = playerSetup;
+import { players } from "../src/gameplay"
+
+export const gameStateArr = [ 'cpu setup','player setup', 'attack'];
+export const [cpuSetup, playerSetup, attack] = gameStateArr;
+export let gameState = cpuSetup;
 
 export function changeGameState(){
 
-    if(gameState === playerSetup){
-        gameState = cpuSetup;         
-    } else if (gameState === cpuSetup) {
-        gameState = playerAttack;
-    } else if (gameState === playerAttack) {
-        gameState = playerResult;
-    } else if (gameState === playerResult) {
-        gameState = cpuAttack;
-    } else if (gameState === cpuAttack) {
-        gameState = cpuResult;
-    } else if (gameState === cpuResult) {
-        gameState = playerAttack;
-    }
+    if(gameState === cpuSetup){
+        gameState = playerSetup;         
+    } else if (gameState === playerSetup && players[0].board.dock.length === 0 && players[1].board.dock.length === 0 ) {
+        gameState = attack;
+    } 
 }
     
 

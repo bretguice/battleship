@@ -19,16 +19,6 @@ h3{
     top: 20vh;
 }
 
-#message-board{
-    position: absolute;
-    right: 50vw;
-    top: 50vh;
-}
-#hit-message,
-#sunk-message {
-    text-align: center;
-}
-
 #player2-board{
     position: absolute;
     left: 60vw;
@@ -38,7 +28,6 @@ h3{
 #player1, 
 #player2 {
     background-color: white;
-
     display: grid;
     grid-template-columns: repeat(10, 45px);
     grid-gap: 2px;
@@ -61,4 +50,22 @@ h3{
 }
 .miss{
     background-color: lightgray;
+}
+#game-over{
+    visibility: hidden;
+    position:absolute;
+    top: 0;
+    right: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.75);
+}
+
+#play-again{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    font-size: 16px;
+    padding: 1rem;
+    justify-content: center;
 }

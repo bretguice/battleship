@@ -1,36 +1,36 @@
+import { players } from "../src/gameplay"
 import Player from "./factories/playerfactor";
 export const playerOneBoard = document.getElementById('player1');
 export const playerTwoBoard = document.getElementById('player2');
+export const rotateButton = document.getElementById('rotate');
 
-export function createGrid(player, playerboard){
+
+export function createGrid(playerboard){
 
     
-    const playerCode = player.playerName === "Player 1" ? "000" : "999";
+    const playerCode = players[0].playerName === "Player 1" ? "000" : "999";
 
-    for(let i = 0; i < player.board.boardSize; i++){
+    for(let i = 0; i < players[0].board.boardSize; i++){
         let cell = document.createElement('div');
         cell.className = "gameboard";
         cell.id = playerCode + i;
         cell.setAttribute('data-id', i);
         const clickLocation = parseInt(cell.getAttribute('data-id'));
-        cell.addEventListener('click', player.board.placeShip.bind(player.board, clickLocation));
-        cell.addEventListener('hover', player.board.placeShip.bind(player.board, clickLocation));
-   
-        // cell.addEventListener('click', player.fireShot);
+        cell.addEventListener('click', players[0].board.placeShip.bind(players[0].board, clickLocation));
         playerboard.appendChild(cell)
     }
 }
 
-export function setOppoBoard(player, playerboard){
-    const playerCode = player.playerName === "Player 1" ? "000" : "999";
+export function setOppoBoard(playerboard){
+    const playerCode = players[1].playerName === "Player 1" ? "000" : "999";
 
-    for(let i = 0; i < player.board.boardSize; i++){
+    for(let i = 0; i < players[1].board.boardSize; i++){
         let cell = document.createElement('div');
         cell.className = "gameboard";
         cell.id = playerCode + i;
         cell.setAttribute('data-id', i);
         const clickLocation = parseInt(cell.getAttribute('data-id'));
-        cell.addEventListener('click', player.fireShot.bind(player.board, clickLocation, player.board));
+        cell.addEventListener('click', players[1].fireShot.bind(players[1].board, clickLocation));
 
         playerboard.appendChild(cell)
     }

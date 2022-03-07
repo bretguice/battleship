@@ -1,5 +1,7 @@
 import Ship from "./shipfactory";
 import Player from "./playerfactor";
+import { gameState, changeGameState,  playerSetup } from "../gamecontroller";
+import { players } from "../gameplay"
 
 class GameBoard {
   constructor (size) {
@@ -12,9 +14,10 @@ class GameBoard {
     this.firedShots = [];
     this.gameOver = false;
     this.yAxis = true;
-    this.hitMessage = "";
-    this.sunkMessage = "";
-
+    this.turn = false;
+    this.hit = false;
+    this.lastShot = 101;
+    
   }
 /*
  Start of game methods
@@ -27,7 +30,7 @@ class GameBoard {
           isShot: false,
           boatPresent: false,
           hit: false,
-        });;
+        });
       }
     }
 
@@ -46,33 +49,42 @@ class GameBoard {
  Ship placement methods
 */
     rotateShip() {
-      // Default axis is y axis.  If default change axis to x.
-      if (this.axis === 'y'){
-        this.axis = 'x';
-      } else if (this.axis === 'x'){
-        this.axis = 'y';
-      }
-      return this.axis;
+      this.yAxis = this.yAxis === false ? true : false;
+      return this.yAxis;
+    
     }
 
     placeShip(location){
+      if(gameState === playerSetup){
       var locationArray = this.createLocationArray(location);
       
       if(this.checkForCollisions(locationArray)){
         locationArray.forEach(loc => this.dock[0].locationArr.push(loc));
         this.markShip(locationArray);
+
+        if (this.dock.length === 0){
+          changeGameState();
+          players[0].changeTurn()
+          players[1].cpuAttack();
+        }
         
-      }else {
+      } else {
         return
       } 
-      
+      }
     }
 
     createLocationArray(location){
         var locationArray = [];
         var iLoc;
         for (let i = 0; i < this.dock[0].shipLength; i++) {
-          iLoc = this.yAxis ? location + i * this.size : location + i
+
+          if (this.yAxis === true){
+            iLoc = location + i * this.size;
+          } else {
+            iLoc =  location + i
+          }
+          
           
         locationArray.push(iLoc);
         
@@ -81,28 +93,7 @@ class GameBoard {
     return locationArray;
   }
 
-    highlightShip(location){
-      
-      var locationArray = [];
-      var iLoc;
-      for (let i = 0; i < this.dock[0].shipLength; i++) {
-        iLoc = this.yAxis ? location + i * this.size : location + i
-        
-       locationArray.push(iLoc);
-       
-      }
-      if(this.checkForCollisions(locationArray)){
-        locationArray.forEach(loc => this.dock[0].locationArr.push(loc));
-        
-        this.markShip(locationArray);
-        
-      }else {
-        return
-      } 
-      
-      
-    }
-
+   
     markShip(locationArray){
       const playerCode = "000";
       
@@ -113,23 +104,7 @@ class GameBoard {
       })
 
       this.inPlay.push(this.dock[0]);
-      this.dock.splice(0, 1);
-   
-    }
-
-    hoverShip(locationArray) {
-      const playerCode = "000";
-
-      this.tiles.forEach(loc => {
-
-      })
-      
-      locationArray.forEach(loc => {
-        const div = document.getElementById(playerCode+loc);
-        div.classList.add('hover');
-      })
-
-
+      this.dock.splice(0, 1);  
     }
 
     checkForCollisions(locationArray) {
@@ -160,37 +135,46 @@ class GameBoard {
       return legalMove;
     }
 
-    receiveAttack(location) {
-      const playerCode = "999";
+    receiveAttack(player, location) {
+      const playerCode = player.playerName === "Player 1" ? "000" : "999"
       const div = document.getElementById(playerCode+location);
       div.classList.add('fired');
 
       this.tiles[location].isShot = true;
+      this.lastShot = location;
       this.inPlay.forEach(ship => ship.checkHit(location));
         if(this.inPlay.some(e => e.didHit === true)){
-          this.hitMessage = 'Hit!';
+          this.hit = true;
           div.classList.add('hit');
           if (this.inPlay.some(ship => ship.sunk === true)) {
+            console.log('sunk')
             const i = this.inPlay.findIndex(ship => ship.sunk);
             this.handleSunkShip(this.inPlay[i]); 
             this.inPlay.splice(i,1);
-            this.checkForGameOver();          
-            
+            players[0].board.checkForGameOver();          
+            players[1].board.checkForGameOver();
         }
       } else {
-        this.hitMessage =  'Miss!';
-        div.classList.add('miss');
+        this.hit =  false;
+        div.classList.add('miss');players[0].board
       }         
+      players[0].changeTurn();
+      players[1].changeTurn();
+
   }
 
     handleSunkShip(ship) {
-      this.sunkMessage = `${ship.shipType} is sunk`;
-      this.graveyard.push(ship);
-      
+      this.graveyard.push(ship);      
   }
     
     checkForGameOver() {
-      this.gameOver = (this.inPlay.length === 0) ? true : false;
+      console.log('start game over test')
+      this.gameOver = (this.graveyard.length === 5) ? true : false;
+      if(this.gameOver){
+        console.log('game over')
+        const endScreen = document.getElementById('game-over').style.visibility = "visible"
+
+      }
       return this.gameOver;
     }
 
@@ -202,34 +186,26 @@ CPU Setup
     }
 
     setupCpuShips(){
-
       while(this.inPlay.length < 5){
-        var random = this.getRandomNumber(0, 100);
-        console.log(random);
-        let axisTest = this.getRandomNumber(0,2);
-        this.yAxis = axisTest === 0 ? true : false;
-        console.log(this.yAxis);
-        var locationArray = this.createLocationArray(random);
-        console.log(locationArray)
+      var random = this.getRandomNumber(0, 100);
+      let axisTest = this.getRandomNumber(0,2);
+      this.yAxis = axisTest === 0 ? true : false;
+      var locationArray = this.createLocationArray(random);
 
-        if(this.checkForCollisions(locationArray)){
-          locationArray.forEach(loc => this.dock[0].locationArr.push(loc));
-          //this.dock[0].locationArr.push(locationArray);
-          console.log(this.dock[0]);
-          this.inPlay.push(this.dock[0]);
-          this.dock.splice(0, 1);
-          console.log("true")
-          
-        } else {
-          console.log('false')
-          this.setupCpuShips();
-        }
+      if(this.checkForCollisions(locationArray)){
+        locationArray.forEach(loc => this.dock[0].locationArr.push(loc));
+        this.inPlay.push(this.dock[0]);
+        this.dock.splice(0, 1);
         
-        }
-            
+      } else {
+        this.setupCpuShips();
+      }
+      
+      }
+      changeGameState();
 
       }
-  
+
   
 
 }
