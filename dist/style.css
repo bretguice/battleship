@@ -1,5 +1,11 @@
+html,
 body {
+    margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	height: 100%;
     background-color: aqua;
+    overflow: hidden;
 }
 h1{
     text-align: center;
@@ -8,6 +14,51 @@ h1{
 h3{
     text-align: center;
     font-size: 24px;
+    z-index: 997;
+}
+
+#ship-placement{
+    visibility: visible;
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(255, 255, 255, .95);
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 997;
+
+}
+#setup-container{
+    position: relative;
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+}
+
+#ship-setter{
+    position: fixed;
+
+    background-color: white;
+    top: 25vh;
+    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(10, 45px);
+    grid-gap: 2px;
+    z-index: 999;
+}
+.setup-btn{
+    
+    width: 5rem;
+    justify-content: center;
+    align-items: center;
+    margin: 25px;
+}
+
+#buttons{
+    position: fixed;
+    bottom: 8vw;
+    justify-content: center;
 }
 
 #board{

@@ -31,6 +31,7 @@ class GameBoard {
           boatPresent: false,
           hit: false,
         });
+
       }
     }
 
@@ -55,12 +56,15 @@ class GameBoard {
     }
 
     placeShip(location){
+      const playerCode = "111";
       if(gameState === playerSetup){
       var locationArray = this.createLocationArray(location);
       
       if(this.checkForCollisions(locationArray)){
         locationArray.forEach(loc => this.dock[0].locationArr.push(loc));
-        this.markShip(locationArray);
+        this.markShip(locationArray, playerCode);
+        this.inPlay.push(this.dock[0]);
+        this.dock.splice(0, 1);
 
         if (this.dock.length === 0){
           changeGameState();
@@ -94,17 +98,15 @@ class GameBoard {
   }
 
    
-    markShip(locationArray){
-      const playerCode = "000";
-      
+    markShip(locationArray, playerCode){
+     
       locationArray.forEach(loc => {
         this.tiles[loc].boatPresent = true;
         const div = document.getElementById(playerCode+loc);
         div.classList.add('ship');
       })
 
-      this.inPlay.push(this.dock[0]);
-      this.dock.splice(0, 1);  
+  
     }
 
     checkForCollisions(locationArray) {

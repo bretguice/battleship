@@ -13,16 +13,25 @@
     <h1>Battleship</h1>
     <div id="board">
         <div id="game-over">
+            <h3 id="game-over-text" >Game Over</h3>
             <button id="play-again" >Play Again</button>
+        </div>
+        <div id="ship-placement">
+            <div id="setup-container">
+                <h2>Place your ships</h4>
+                <div class="setup" id="ship-setter"></div>
+                <div id="buttons">
+                    <button class="setup setup-btn" id="rotate"  >Rotate Ship</button>
+                    <button class="setup setup-btn" id="reset"  >Reset Ships</button>
+                    <button class="setup setup-btn" id="confirm" >Confirm Ships</button>
+                </div>
+            </div>
         </div>
             <div id="player1-board">
                 <h3>Player 1</h3>
                 <div id="player1"></div>
             </div>
-            <div id="ship-placement">
-              
-                <button id="rotate"  >Rotate Ship</button>
-            </div>
+
             <div id="player2-board">
                 <h3>Player 2</h3>
                 <div id="player2"></div>

@@ -1,14 +1,16 @@
+import { doc } from "prettier";
 import { players } from "../src/gameplay"
 import Player from "./factories/playerfactor";
 export const playerOneBoard = document.getElementById('player1');
 export const playerTwoBoard = document.getElementById('player2');
 export const rotateButton = document.getElementById('rotate');
+export const setupScreen = document.getElementById('ship-placement');
+export const setup = document.getElementById('ship-setter');
+export const confirmShip = document.getElementById('confirm');
+export const resetShips = document.getElementById('reset');
 
-
-export function createGrid(playerboard){
-
-    
-    const playerCode = players[0].playerName === "Player 1" ? "000" : "999";
+export function createGrid(playerboard){ 
+    const playerCode = '111'
 
     for(let i = 0; i < players[0].board.boardSize; i++){
         let cell = document.createElement('div');
@@ -34,5 +36,20 @@ export function setOppoBoard(playerboard){
 
         playerboard.appendChild(cell)
     }
+
+}
+
+export function showPlayerBoard(playerboard){
+    const playerCode = players[0].playerName === "Player 1" ? "000" : "999";
+
+    for(let i = 0; i < players[0].board.boardSize; i++){
+        let cell = document.createElement('div');
+        cell.className = "gameboard";
+        cell.id = playerCode + i;
+        cell.setAttribute('data-id', i);
+        playerboard.appendChild(cell)
+    }
+
+    players[0].board.inPlay.forEach(ship => players[0].board.markShip(ship.locationArr, playerCode))
 
 }
