@@ -7,7 +7,6 @@ export const rotateButton = document.getElementById('rotate');
 export const setupScreen = document.getElementById('ship-placement');
 export const setup = document.getElementById('ship-setter');
 export const confirmShip = document.getElementById('confirm');
-export const resetShips = document.getElementById('reset');
 
 export function createGrid(playerboard){ 
     const playerCode = '111'

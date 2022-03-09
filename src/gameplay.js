@@ -9,19 +9,18 @@ var player2 = new Player('Player 2', "cpu");
 export const players = [player, player2];
 rotateButton.addEventListener('click', player.board.rotateShip.bind(player.board))
 confirmShip.addEventListener('click', function(){
+    if(player.board.dock.length === 0){
     setupScreen.style.visibility = "hidden";
     showPlayerBoard(playerOneBoard);
+    }
 })
 player.board.setupBoard();
 player2.board.setupBoard();
 player.board.createShips();
 player2.board.createShips();
 createGrid(setup)
-// showPlayerBoard(playerOneBoard);
 setOppoBoard(playerTwoBoard); 
 player2.board.setupCpuShips();
-
-console.log(gameState)
 
 
 

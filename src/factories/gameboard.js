@@ -12,6 +12,7 @@ class GameBoard {
     this.inPlay = [];
     this.graveyard = [];
     this.firedShots = [];
+    this.hits = [];
     this.gameOver = false;
     this.yAxis = true;
     this.turn = false;
@@ -53,6 +54,10 @@ class GameBoard {
       this.yAxis = this.yAxis === false ? true : false;
       return this.yAxis;
     
+    }
+
+    resetShips(){
+      this.inPlay
     }
 
     placeShip(location){
@@ -109,15 +114,29 @@ class GameBoard {
   
     }
 
+    checkForBoatPresent(locationArray){
+      const boatCollision = locationArray.some((loc) => this.tiles[loc].boatPresent === true) ? true : false;
+      return boatCollision;
+    }
+
+    checkOutOfBounds(locationArray){
+      const outOfBounds = locationArray.some((loc) => !this.tiles[loc]) ? true : false;
+      return outOfBounds;
+    }
+
     checkForCollisions(locationArray) {
         const xArrayBumber = [9, 19, 29, 39, 49, 59, 69, 79, 89, 99]
         let legalLoc;
-        if (locationArray.some((e) => !this.tiles[e])){
+        if(
+          (xArrayBumber.some((n)=>[n, n + 1].every((loc) => locationArray.includes(loc))))){
           legalLoc = false;
-        } else if (xArrayBumber.some((n)=>[n, n + 1].every((e) => locationArray.includes(e)))) {
+          console.log('edge fail')
+        } else if (this.checkOutOfBounds(locationArray)){
           legalLoc = false;
-        } else if (locationArray.some((e) => this.tiles[e].boatPresent)){
+          console.log('out of bounds')
+        } else if (this.checkForBoatPresent(locationArray)){
           legalLoc = false;
+          console.log('boat collision')
         } else {
           legalLoc = true;
         }
@@ -147,9 +166,9 @@ class GameBoard {
       this.inPlay.forEach(ship => ship.checkHit(location));
         if(this.inPlay.some(e => e.didHit === true)){
           this.hit = true;
+          this.hits.push(location);
           div.classList.add('hit');
           if (this.inPlay.some(ship => ship.sunk === true)) {
-            console.log('sunk')
             const i = this.inPlay.findIndex(ship => ship.sunk);
             this.handleSunkShip(this.inPlay[i]); 
             this.inPlay.splice(i,1);
@@ -170,10 +189,8 @@ class GameBoard {
   }
     
     checkForGameOver() {
-      console.log('start game over test')
       this.gameOver = (this.graveyard.length === 5) ? true : false;
       if(this.gameOver){
-        console.log('game over')
         const endScreen = document.getElementById('game-over').style.visibility = "visible"
 
       }
@@ -188,18 +205,23 @@ CPU Setup
     }
 
     setupCpuShips(){
-      while(this.inPlay.length < 5){
+      // let cpuShips = 1;
+      while(this.dock.length > 0){
       var random = this.getRandomNumber(0, 100);
       let axisTest = this.getRandomNumber(0,2);
       this.yAxis = axisTest === 0 ? true : false;
       var locationArray = this.createLocationArray(random);
+      console.log(locationArray);
 
       if(this.checkForCollisions(locationArray)){
         locationArray.forEach(loc => this.dock[0].locationArr.push(loc));
+        locationArray.forEach(loc => this.tiles[loc].boatPresent = true)
         this.inPlay.push(this.dock[0]);
         this.dock.splice(0, 1);
+        // cpuShips++;
         
       } else {
+        console.log('fail')
         this.setupCpuShips();
       }
       
