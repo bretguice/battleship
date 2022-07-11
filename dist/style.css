@@ -22,6 +22,7 @@ h3{
     visibility: visible;
     position: fixed;
     display: flex;
+    justify-content: center;
     flex-direction: column;
     background-color: rgba(255, 255, 255, .97);
     top: 0;
@@ -42,7 +43,7 @@ h3{
     background-color: white;
     justify-content: center;
     display: grid;
-    grid-template-columns: repeat(10, 40px);
+    grid-template-columns: repeat(10, 45px);
     grid-gap: 2px;
     z-index: 999;
 }
