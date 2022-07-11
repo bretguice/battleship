@@ -28,7 +28,6 @@ h3{
     width: 100vw;
     height: 100vh;
     z-index: 997;
-
 }
 #setup-container{
     position: relative;
@@ -58,6 +57,7 @@ h3{
 #buttons{
     position: flex;
     justify-content: center;
+    z-index: 1000
 }
 
 #board{
