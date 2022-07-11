@@ -44,7 +44,7 @@ h3{
     top: 25vh;
     justify-content: center;
     display: grid;
-    grid-template-columns: repeat(10, 45px);
+    grid-template-columns: repeat(10, 40px);
     grid-gap: 2px;
     z-index: 999;
 }
