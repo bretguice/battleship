@@ -38,10 +38,9 @@ h3{
 }
 
 #ship-setter{
-    position: fixed;
-
+    position: flex;
+    margin: 1rem;
     background-color: white;
-    top: 25vh;
     justify-content: center;
     display: grid;
     grid-template-columns: repeat(10, 40px);
@@ -57,8 +56,7 @@ h3{
 }
 
 #buttons{
-    position: fixed;
-    bottom: 8vw;
+    position: flex;
     justify-content: center;
 }
 
