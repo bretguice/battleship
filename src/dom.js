@@ -10,7 +10,6 @@ export const confirmShip = document.getElementById('confirm');
 
 export function createGrid(playerboard){ 
     const playerCode = '111'
-
     for(let i = 0; i < players[0].board.boardSize; i++){
         let cell = document.createElement('div');
         cell.className = "gameboard";
