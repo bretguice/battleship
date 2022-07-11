@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="./style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battleship</title>
+</head>
+<body>
+
+
+    <h1>Battleship</h1>
+    <div id="board">
+        <div id="game-over">
+            <h3 id="game-over-text" >Game Over</h3>
+            <button onClick="window.location.reload();" id="play-again" >Play Again</button>
+        </div>
+        <div id="ship-placement">
+            <div id="setup-container">
+                <h2>Place your ships</h4>
+                <div class="setup" id="ship-setter"></div>
+                <div id="buttons">
+                    <button class="setup setup-btn" id="rotate"  >Rotate Ship</button>
+                    <button class="setup setup-btn" id="confirm" >Confirm Ships</button>
+                </div>
+            </div>
+        </div>
+            <div id="player1-board">
+                <h3>Player 1</h3>
+                <div id="player1"></div>
+            </div>
+
+            <div id="player2-board">
+                <h3>Player 2</h3>
+                <div id="player2"></div>
+            </div>
+
+    </div>
+    <script src= "./main.js" defer></script>
+</body>
+</html>
